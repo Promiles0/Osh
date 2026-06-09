@@ -1,520 +1,621 @@
 import { useState } from "react";
 
-// ─── PROBLEM BANK ───────────────────────────────────────────────────────────
-const sections = [
+const groups = [
   {
-    id: "domain",
-    title: "Finding Domain",
+    id: "g1",
+    label: "G1",
+    title: "Expressions Temporelles & Heure",
     color: "#7c3aed",
-    emoji: "🔍",
-    problems: [
+    emoji: "🕐",
+    exercises: [
       {
-        question: "Find the domain of f(x) = (x-1)(1+x) / (9 - x²)",
-        hint: "Set denominator ≠ 0. Factor 9 - x².",
-        steps: [
-          "Set denominator ≠ 0: 9 - x² ≠ 0",
-          "Factor: (3-x)(3+x) ≠ 0",
-          "So x ≠ 3 and x ≠ -3",
-          "Domain = ℝ \\ {-3, 3}  i.e. all reals except ±3"
+        title: "Exercice 1 — Passé / Présent / Futur",
+        type: "table",
+        headers: ["PRÉSENT", "PASSÉ", "FUTUR"],
+        rows: [
+          ["aujourd'hui", "hier", "demain"],
+          ["en ce moment", "autrefois", "bientôt"],
+          ["actuellement", "il y a longtemps", "plus tard"],
         ],
-        answer: "ℝ \\ {-3, 3}"
       },
       {
-        question: "Find the domain of f(x) = √((x-2)(x+3) / (1-x))",
-        hint: "Even root → expression inside must be ≥ 0. Sign analysis needed.",
-        steps: [
-          "Need (x-2)(x+3)/(1-x) ≥ 0",
-          "Critical values: x = 2, x = -3, x = 1",
-          "Sign table for intervals: (-∞,-3), (-3,1), (1,2), (2,∞)",
-          "Test each: (-∞,-3): neg×neg/pos = + ✓ | (-3,1): pos×neg/pos = - ✗",
-          "(1,2): pos×pos/neg = - ✗ | (2,∞): pos×pos/neg = - ✗",
-          "Also include x=-3 and x=2 (makes expression = 0, still valid for √)",
-          "Domain = (-∞, -3] ∪ {2}  Wait — recheck: at x=2 value=0 ✓",
-          "Domain = (-∞, -3] ∪ [2, 2] but x≠1 (denom=0)",
-          "Final: Domain = (-∞, -3] ∪ {2}"
+        title: "Exercice 2 — Expressions temporelles",
+        type: "qa",
+        items: [
+          { n: 1, q: "Je travaille ___", a: "aujourd'hui", note: "présent" },
+          { n: 2, q: "Elle est partie ___", a: "hier", note: "passé" },
+          { n: 3, q: "Il arrivera ___", a: "bientôt", note: "futur" },
+          { n: 4, q: "___, les gens vivaient sans électricité.", a: "Autrefois", note: "passé lointain" },
+          { n: 5, q: "Nous sommes ___ en train de manger.", a: "en ce moment", note: "présent" },
         ],
-        answer: "(-∞, -3] ∪ {2}"
       },
       {
-        question: "Find the domain of f(x) = ⁴√(x / (x²-9))",
-        hint: "4th root is even → inside ≥ 0. Also denominator ≠ 0.",
-        steps: [
-          "Need x/(x²-9) ≥ 0, and x²-9 ≠ 0",
-          "Factor denominator: (x-3)(x+3) ≠ 0 → x ≠ ±3",
-          "Critical values: x = 0, x = -3, x = 3",
-          "Sign table on (-∞,-3), (-3,0), (0,3), (3,∞):",
-          "(-∞,-3): neg/(pos) = neg ✗ | (-3,0): neg/neg = pos ✓",
-          "(0,3): pos/neg = neg ✗ | (3,∞): pos/pos = pos ✓",
-          "Include x=0 (gives 0, valid for root)",
-          "Domain = [-3, 0] ∪ (3, ∞)  — but exclude ±3",
-          "Domain = (-3, 0] ∪ (3, ∞)"
+        title: "Exercice 3 — Quelle heure est-il ?",
+        type: "qa",
+        items: [
+          { n: "08h00", q: "08h00", a: "Il est huit heures (du matin)." },
+          { n: "12h00", q: "12h00", a: "Il est midi." },
+          { n: "15h15", q: "15h15", a: "Il est quinze heures et quart." },
+          { n: "19h45", q: "19h45", a: "Il est vingt heures moins le quart." },
+          { n: "00h30", q: "00h30", a: "Il est minuit et demi." },
         ],
-        answer: "(-3, 0] ∪ (3, ∞)"
       },
       {
-        question: "Find the domain of f(x) = ⁵√(x / (3 - 4x - x²))",
-        hint: "5th root is odd → no restriction from root. Only denominator ≠ 0.",
-        steps: [
-          "Odd root (n=5) → expression inside can be any real number",
-          "Only restriction: denominator ≠ 0",
-          "Set 3 - 4x - x² ≠ 0 → x² + 4x - 3 ≠ 0",
-          "Discriminant: 16 + 12 = 28, roots = (-4 ± √28)/2 = -2 ± √7",
-          "So x ≠ -2+√7 and x ≠ -2-√7",
-          "Domain = ℝ \\ {-2-√7, -2+√7}"
+        title: "Exercice 4 — Structures de phrases",
+        type: "table",
+        headers: ["Structure", "Exemple"],
+        rows: [
+          ["S + V (intransitif)", "Les oiseaux chantent."],
+          ["S + V état + Adjectif", "Elle est heureuse."],
+          ["S + V + Adverbe + Adjectif", "Il est très intelligent."],
+          ["S + V + COD", "Je lis un livre."],
+          ["S + V + COI", "Il parle à son ami."],
+          ["S + V + CC de lieu", "Nous habitons à Kigali."],
+          ["S + V + CC de temps", "Elle part demain matin."],
         ],
-        answer: "ℝ \\ {-2-√7, -2+√7}"
       },
-    ]
+    ],
   },
   {
-    id: "values",
-    title: "Evaluating Functions",
+    id: "g2",
+    label: "G2",
+    title: "Jours, Mois & Points Cardinaux",
     color: "#0891b2",
-    emoji: "🧮",
-    problems: [
+    emoji: "🧭",
+    exercises: [
       {
-        question: "Given f(x) = x³ - 2x² + 4x - 1, find: f(0), f(1), f(-2)",
-        hint: "Substitute directly and simplify each time.",
-        steps: [
-          "f(0) = 0³ - 2(0)² + 4(0) - 1 = 0 - 0 + 0 - 1 = -1",
-          "f(1) = 1 - 2 + 4 - 1 = 2",
-          "f(-2) = (-2)³ - 2(-2)² + 4(-2) - 1",
-          "     = -8 - 2(4) - 8 - 1",
-          "     = -8 - 8 - 8 - 1 = -25"
+        title: "Exercice 1 — Jours & Mois",
+        type: "qa",
+        items: [
+          { n: 1, q: "Quel jour vient après le mardi ?", a: "Le mercredi." },
+          { n: 2, q: "Quel est le 3e mois de l'année ?", a: "Mars." },
+          { n: 3, q: "Quel est le dernier mois de l'année ?", a: "Décembre." },
+          { n: 4, q: "Quel jour est entre le mercredi et le vendredi ?", a: "Le jeudi." },
+          { n: 5, q: "Les deux mois d'été (en France) ?", a: "Juillet et août." },
         ],
-        answer: "f(0) = -1,  f(1) = 2,  f(-2) = -25"
       },
       {
-        question: "Given f(x) = x³ - 2x² + 4x - 1, find [f(x+h) - f(x)] / h",
-        hint: "Expand f(x+h) by substituting (x+h) for every x. Then subtract f(x) and simplify.",
-        steps: [
-          "f(x+h) = (x+h)³ - 2(x+h)² + 4(x+h) - 1",
-          "= x³+3x²h+3xh²+h³ - 2(x²+2xh+h²) + 4x+4h - 1",
-          "= x³+3x²h+3xh²+h³ - 2x²-4xh-2h² + 4x+4h - 1",
-          "f(x+h)-f(x) = 3x²h+3xh²+h³ - 4xh - 2h² + 4h",
-          "Divide by h: 3x² + 3xh + h² - 4x - 2h + 4",
-          "Answer = 3x² + 3xh + h² - 4x - 2h + 4"
+        title: "Exercice 2 — Points Cardinaux",
+        type: "qa",
+        items: [
+          { n: 6, q: "Le soleil se lève à l'___.", a: "Est" },
+          { n: 7, q: "Le soleil se couche à l'___.", a: "Ouest" },
+          { n: 8, q: "L'Antarctique est au ___ du globe.", a: "Sud" },
+          { n: 9, q: "Le pôle est au ___ du globe.", a: "Nord" },
+          { n: 10, q: "La Normandie est au ___ de Paris.", a: "nord-ouest" },
         ],
-        answer: "3x² + 3xh + h² - 4x - 2h + 4"
       },
       {
-        question: "f(x) = 2x + 1, g(x) = x² - 1. Find fog(x), gof(x), fof(x), gog(x)",
-        hint: "fog means f(g(x)). Substitute g into f. Order matters!",
-        steps: [
-          "fog(x) = f(g(x)) = f(x²-1) = 2(x²-1)+1 = 2x²-2+1 = 2x²-1",
-          "gof(x) = g(f(x)) = g(2x+1) = (2x+1)²-1 = 4x²+4x+1-1 = 4x²+4x",
-          "fof(x) = f(f(x)) = f(2x+1) = 2(2x+1)+1 = 4x+2+1 = 4x+3",
-          "gog(x) = g(g(x)) = g(x²-1) = (x²-1)²-1 = x⁴-2x²+1-1 = x⁴-2x²"
+        title: "Exercice 3 — Expressions de quantité",
+        type: "qa",
+        items: [
+          { n: 1, q: "Il y a ___ d'étudiants (salle pleine).", a: "beaucoup" },
+          { n: 2, q: "Je n'ai ___ argent (porte-monnaie vide).", a: "pas d'" },
+          { n: 3, q: "Elle mange ___ chocolat (mauvais pour la santé).", a: "trop de" },
+          { n: 4, q: "Il y a ___ 30 personnes.", a: "environ" },
+          { n: 5, q: "Tu as ___ dormi, tu peux sortir.", a: "assez" },
         ],
-        answer: "fog=2x²-1 | gof=4x²+4x | fof=4x+3 | gog=x⁴-2x²"
-      }
-    ]
+      },
+    ],
   },
   {
-    id: "inverse",
-    title: "Inverse Functions",
+    id: "g3",
+    label: "G3",
+    title: "Articles Partitifs & Liens de Parenté",
     color: "#059669",
-    emoji: "🔄",
-    problems: [
+    emoji: "👨‍👩‍👧",
+    exercises: [
       {
-        question: "Find f⁻¹(x) for f(x) = 2x + 1",
-        hint: "Write y = f(x), then swap x↔y, then solve for y.",
-        steps: [
-          "Step 1: Write y = 2x + 1",
-          "Step 2: Swap (change object): x = 2y + 1",
-          "Step 3: Solve for y: 2y = x - 1",
-          "Step 4: y = (x-1)/2",
-          "Therefore f⁻¹(x) = (x-1)/2",
-          "Check: f(f⁻¹(x)) = 2·(x-1)/2 + 1 = x-1+1 = x ✓"
+        title: "Exercice 1 — Articles partitifs (du, de la, de l', des, pas de)",
+        type: "qa",
+        items: [
+          { n: 6, q: "Je bois ___ eau chaque matin.", a: "de l'", note: "eau = féminin, commence par voyelle" },
+          { n: 7, q: "Il mange ___ pain avec du beurre.", a: "du", note: "pain = masculin" },
+          { n: 8, q: "Elle n'a ___ frère ni sœur.", a: "pas de", note: "négation → pas de" },
+          { n: 9, q: "Nous achetons ___ légumes au marché.", a: "des", note: "pluriel" },
+          { n: 10, q: "Tu veux ___ café ?", a: "du", note: "café = masculin" },
         ],
-        answer: "f⁻¹(x) = (x-1)/2"
       },
       {
-        question: "Find f⁻¹(x) for f(x) = (3x+2)/(x-1)",
-        hint: "Same method — swap x and y, then isolate y (you'll need to collect y terms).",
-        steps: [
-          "Step 1: y = (3x+2)/(x-1)",
-          "Step 2: Swap: x = (3y+2)/(y-1)",
-          "Step 3: Multiply both sides by (y-1): x(y-1) = 3y+2",
-          "Step 4: Expand: xy - x = 3y + 2",
-          "Step 5: Collect y terms: xy - 3y = x + 2",
-          "Step 6: Factor: y(x-3) = x + 2",
-          "Step 7: y = (x+2)/(x-3)",
-          "f⁻¹(x) = (x+2)/(x-3),  domain: x ≠ 3"
+        title: "Exercice 2 — Liens de parenté",
+        type: "qa",
+        items: [
+          { n: 1, q: "La mère de ma mère est ma ___.", a: "grand-mère" },
+          { n: 2, q: "Le fils de mon oncle est mon ___.", a: "cousin" },
+          { n: 3, q: "La fille de mes parents est ma ___.", a: "sœur" },
+          { n: 4, q: "Le mari de ma fille est mon ___.", a: "gendre" },
+          { n: 5, q: "La sœur de mon mari est ma ___.", a: "belle-sœur" },
         ],
-        answer: "f⁻¹(x) = (x+2)/(x-3)"
       },
       {
-        question: "Find f⁻¹(x) for f(x) = x² + 1, (x ≥ 0)",
-        hint: "For square root inverse, restrict domain first so f is one-to-one.",
-        steps: [
-          "Step 1: y = x² + 1",
-          "Step 2: Swap: x = y² + 1",
-          "Step 3: Solve for y: y² = x - 1  →  y = √(x-1)",
-          "Take positive root since original domain was x ≥ 0",
-          "f⁻¹(x) = √(x-1),  domain: x ≥ 1",
-          "Check: f(f⁻¹(x)) = (√(x-1))² + 1 = x-1+1 = x ✓"
+        title: "Exercice 3 — Expression des goûts",
+        type: "qa",
+        items: [
+          { n: 6, q: "Exprimer qu'on aime la musique", a: "J'aime beaucoup la musique. / La musique me plaît beaucoup." },
+          { n: 7, q: "Exprimer qu'on déteste les légumes", a: "Je déteste les légumes. / Les légumes me déplaisent." },
+          { n: 8, q: "Préférer le café au thé", a: "Je préfère le café au thé. / J'aime mieux le café que le thé." },
+          { n: 9, q: "Exprimer qu'on aime lire", a: "J'aime bien lire. / La lecture me plaît bien." },
+          { n: 10, q: "Ce qu'on aime le plus", a: "Ce que j'aime le plus, c'est voyager. / Voyager est ma passion." },
         ],
-        answer: "f⁻¹(x) = √(x-1),  x ≥ 1"
-      }
-    ]
+      },
+    ],
   },
   {
-    id: "parity",
-    title: "Even / Odd Parity",
+    id: "g4",
+    label: "G4",
+    title: "Interrogation — 3 Formes",
     color: "#d97706",
-    emoji: "⚖️",
-    problems: [
+    emoji: "❓",
+    exercises: [
       {
-        question: "Determine if f(x) = x⁴ - 2x² + 5 is even, odd, or neither",
-        hint: "Compute f(-x), simplify, compare to f(x) and -f(x).",
-        steps: [
-          "Compute f(-x): f(-x) = (-x)⁴ - 2(-x)² + 5",
-          "= x⁴ - 2x² + 5",
-          "Compare: f(-x) = x⁴ - 2x² + 5 = f(x) ✓",
-          "Conclusion: EVEN function",
-          "Graph is symmetric about the Y-axis"
+        title: "Exercice 1 — Par intonation (montée de voix)",
+        type: "transform",
+        instruction: "Phrase déclarative → Question par intonation",
+        items: [
+          { from: "Elle travaille ici.", to: "Elle travaille ici ?" },
+          { from: "Vous habitez à Kigali.", to: "Vous habitez à Kigali ?" },
+          { from: "Il est médecin.", to: "Il est médecin ?" },
+          { from: "Elles arrivent demain.", to: "Elles arrivent demain ?" },
+          { from: "Tu aimes le chocolat.", to: "Tu aimes le chocolat ?" },
+          { from: "Nous partons ce soir.", to: "Nous partons ce soir ?" },
+          { from: "Il fait beau aujourd'hui.", to: "Il fait beau aujourd'hui ?" },
+          { from: "Vous comprenez la leçon.", to: "Vous comprenez la leçon ?" },
         ],
-        answer: "EVEN — f(-x) = f(x)"
       },
       {
-        question: "Determine if f(x) = 3x⁵ - 2x³ + x is even, odd, or neither",
-        hint: "All odd powers — expect odd function.",
-        steps: [
-          "f(-x) = 3(-x)⁵ - 2(-x)³ + (-x)",
-          "= 3(-x⁵) - 2(-x³) + (-x)",
-          "= -3x⁵ + 2x³ - x",
-          "= -(3x⁵ - 2x³ + x)",
-          "= -f(x) ✓",
-          "Conclusion: ODD function",
-          "Graph is symmetric about the ORIGIN"
+        title: "Exercice 2 — Avec « est-ce que »",
+        type: "transform",
+        instruction: "Phrase → Question avec est-ce que",
+        items: [
+          { from: "Tu parles swahili.", to: "Est-ce que tu parles swahili ?" },
+          { from: "Elle a mangé.", to: "Est-ce qu'elle a mangé ?" },
+          { from: "Ils comprennent le français.", to: "Est-ce qu'ils comprennent le français ?" },
+          { from: "Vous avez un stylo.", to: "Est-ce que vous avez un stylo ?" },
+          { from: "Il pleut dehors.", to: "Est-ce qu'il pleut dehors ?" },
+          { from: "Tu aimes le cinéma.", to: "Est-ce que tu aimes le cinéma ?" },
+          { from: "Elle est arrivée à l'heure.", to: "Est-ce qu'elle est arrivée à l'heure ?" },
+          { from: "Nous pouvons sortir.", to: "Est-ce que nous pouvons sortir ?" },
         ],
-        answer: "ODD — f(-x) = -f(x)"
       },
       {
-        question: "Determine if f(x) = x³ + x² is even, odd, or neither",
-        hint: "Mixed odd and even powers — suspect neither.",
-        steps: [
-          "f(-x) = (-x)³ + (-x)² = -x³ + x²",
-          "Compare to f(x) = x³ + x²: NOT equal → not even",
-          "Compare to -f(x) = -x³ - x²: NOT equal → not odd",
-          "Conclusion: NEITHER even nor odd"
+        title: "Exercice 3 — Inversion du sujet (forme soutenue)",
+        type: "transform",
+        instruction: "Phrase → Inversion du sujet",
+        items: [
+          { from: "Vous comprenez.", to: "Comprenez-vous ?" },
+          { from: "Il mange.", to: "Mange-t-il ?" },
+          { from: "Elles partent demain.", to: "Partent-elles demain ?" },
+          { from: "Tu as fini.", to: "As-tu fini ?" },
+          { from: "Elle aime le sport.", to: "Aime-t-elle le sport ?" },
+          { from: "Nous pouvons entrer.", to: "Pouvons-nous entrer ?" },
+          { from: "Il parle anglais.", to: "Parle-t-il anglais ?" },
+          { from: "Vous êtes prêts.", to: "Êtes-vous prêts ?" },
         ],
-        answer: "NEITHER"
       },
-      {
-        question: "Determine if f(x) = sin(x)/x is even, odd, or neither (x ≠ 0)",
-        hint: "Use the known parity of sin(x).",
-        steps: [
-          "f(-x) = sin(-x)/(-x)",
-          "sin(-x) = -sin(x)  [sine is odd]",
-          "So f(-x) = (-sin x)/(-x) = sin(x)/x = f(x)",
-          "f(-x) = f(x) ✓",
-          "Conclusion: EVEN function"
-        ],
-        answer: "EVEN — f(-x) = f(x)"
-      }
-    ]
+    ],
   },
   {
-    id: "explog",
-    title: "Exponential & Log Equations",
+    id: "g5",
+    label: "G5",
+    title: "Adjectifs Interrogatifs & Pronoms",
+    color: "#be185d",
+    emoji: "🔤",
+    exercises: [
+      {
+        title: "Exercice 1 — Quel / Quelle / Quels / Quelles",
+        type: "qa",
+        items: [
+          { n: 1, q: "___ heure est-il ?", a: "Quelle", note: "heure = féminin singulier" },
+          { n: 2, q: "___ langue parles-tu ?", a: "Quelle", note: "langue = féminin singulier" },
+          { n: 3, q: "___ pays visitez-vous ?", a: "Quels", note: "pays = masculin pluriel" },
+          { n: 4, q: "___ couleur préfères-tu ?", a: "Quelle", note: "couleur = féminin singulier" },
+          { n: 5, q: "___ cours suivez-vous ?", a: "Quels", note: "cours = masculin pluriel" },
+          { n: 6, q: "___ est ton plat préféré ?", a: "Quel", note: "plat = masculin singulier" },
+          { n: 7, q: "___ sont tes matières préférées ?", a: "Quelles", note: "matières = féminin pluriel" },
+          { n: 8, q: "___ temps fait-il ?", a: "Quel", note: "temps = masculin singulier" },
+        ],
+      },
+      {
+        title: "Exercice 2 — Mots interrogatifs",
+        type: "qa",
+        items: [
+          { n: 1, q: "___ habites-tu ?", a: "Où", note: "lieu" },
+          { n: 2, q: "___ est-ce que tu penses ?", a: "À quoi", note: "chose" },
+          { n: 3, q: "___ vient ce soir ?", a: "Qui", note: "personne" },
+          { n: 4, q: "___ coûte ce livre ?", a: "Combien", note: "prix" },
+          { n: 5, q: "___ pleurez-vous ?", a: "Pourquoi", note: "cause" },
+          { n: 6, q: "___ fais-tu en ce moment ?", a: "Que", note: "action" },
+          { n: 7, q: "___ arrivent-ils ?", a: "Quand", note: "temps" },
+          { n: 8, q: "___ viens-tu à l'école ?", a: "Comment", note: "manière" },
+        ],
+      },
+      {
+        title: "Exercice 3 — Pronoms sujets",
+        type: "qa",
+        items: [
+          { n: 1, q: "Sophie chante.", a: "Elle chante." },
+          { n: 2, q: "Le professeur explique.", a: "Il explique." },
+          { n: 3, q: "Pierre et moi allons au marché.", a: "Nous allons au marché." },
+          { n: 4, q: "Les garçons jouent.", a: "Ils jouent." },
+          { n: 5, q: "Keza et Amina dansent.", a: "Elles dansent." },
+        ],
+      },
+      {
+        title: "Exercice 4 — Pronoms compléments (le, la, les, lui, leur, y, en)",
+        type: "qa",
+        items: [
+          { n: 1, q: "Il mange le pain.", a: "Il le mange.", note: "COD masculin" },
+          { n: 2, q: "Elle parle à Pierre.", a: "Elle lui parle.", note: "COI personne singulier" },
+          { n: 3, q: "Nous regardons les films.", a: "Nous les regardons.", note: "COD pluriel" },
+          { n: 4, q: "Il va à Paris.", a: "Il y va.", note: "y = lieu / à + chose" },
+          { n: 5, q: "Tu téléphones à tes amis.", a: "Tu leur téléphones.", note: "COI personnes pluriel" },
+          { n: 6, q: "Elle prend du café.", a: "Elle en prend.", note: "en = de + chose" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "g6",
+    label: "G6",
+    title: "Verbes d'État / d'Action & COD / COI",
     color: "#dc2626",
-    emoji: "📈",
-    problems: [
+    emoji: "⚡",
+    exercises: [
       {
-        question: "Solve: e^(3x+1) = 1/e²",
-        hint: "Write both sides as powers of e, then equate exponents.",
-        steps: [
-          "Rewrite right side: 1/e² = e^(-2)",
-          "Now: e^(3x+1) = e^(-2)",
-          "Equate exponents: 3x + 1 = -2",
-          "3x = -3",
-          "x = -1"
+        title: "Exercice 1 — Verbe d'État (VÉ) ou Verbe d'Action (VA) ?",
+        type: "table",
+        headers: ["Verbe", "Type", "Justification"],
+        rows: [
+          ["EST", "VÉ", "Être = verbe d'état"],
+          ["COURT", "VA", "Action physique"],
+          ["SEMBLE", "VÉ", "Sembler = verbe d'état"],
+          ["MANGEONS", "VA", "Action concrète"],
+          ["PARAIS", "VÉ", "Paraître = verbe d'état"],
+          ["JOUENT", "VA", "Action physique"],
+          ["DEVIENT", "VÉ", "Devenir = verbe d'état"],
+          ["CHANTE", "VA", "Action vocale"],
+          ["RESTE", "VÉ", "Rester + adj = état"],
+          ["TRAVAILLEZ", "VA", "Action concrète"],
         ],
-        answer: "x = -1"
       },
       {
-        question: "Solve: 2ˣ = 3^(x-1)",
-        hint: "Take log of both sides. Use log(aᵇ) = b·log(a).",
-        steps: [
-          "Take ln of both sides: ln(2ˣ) = ln(3^(x-1))",
-          "Apply power law: x·ln2 = (x-1)·ln3",
-          "Expand: x·ln2 = x·ln3 - ln3",
-          "Collect x: x·ln2 - x·ln3 = -ln3",
-          "x(ln2 - ln3) = -ln3",
-          "x = -ln3 / (ln2 - ln3) = ln3 / (ln3 - ln2)"
+        title: "Exercice 2 — Conjuguez et accordez l'adjectif",
+        type: "qa",
+        items: [
+          { n: 11, q: "Mes sœurs ___ ___.", a: "paraissent contentes", note: "féminin pluriel" },
+          { n: 12, q: "Le professeur ___ ___.", a: "semble sérieux", note: "masculin singulier" },
+          { n: 13, q: "Tu ___ ___.", a: "deviens grand(e)", note: "accord selon le sujet" },
         ],
-        answer: "x = ln3 / (ln3 - ln2) ≈ 2.71"
       },
       {
-        question: "Solve: (log x)² - log(x³) + 2 = 0",
-        hint: "Let t = log x. Use power law log(x³) = 3log x = 3t.",
-        steps: [
-          "Let t = log x",
-          "Rewrite: t² - 3t + 2 = 0",
-          "Factor: (t-1)(t-2) = 0",
-          "So t = 1 or t = 2",
-          "t = 1: log x = 1 → x = 10",
-          "t = 2: log x = 2 → x = 100",
-          "Check both in original: both valid ✓"
+        title: "Exercice 3 — Soulignez le COD (V + Qui? / Quoi?)",
+        type: "qa",
+        items: [
+          { n: 1, q: "Je mange ___.", a: "une pomme" },
+          { n: 2, q: "Il regarde ___.", a: "la télévision" },
+          { n: 3, q: "Tu aimes ___.", a: "la musique" },
+          { n: 4, q: "Nous visitons ___.", a: "le musée" },
+          { n: 5, q: "Elle appelle ___.", a: "son ami" },
+          { n: 6, q: "Ils écoutent ___.", a: "le professeur" },
+          { n: 7, q: "Tu prends ___.", a: "le bus" },
+          { n: 8, q: "Elle achète ___.", a: "des légumes" },
         ],
-        answer: "x = 10  or  x = 100"
       },
       {
-        question: "Solve: 10^(2x) + 10^x = 2",
-        hint: "Let u = 10ˣ. Then 10^(2x) = u². Solve the quadratic.",
-        steps: [
-          "Let u = 10ˣ  (u > 0)",
-          "Equation becomes: u² + u - 2 = 0",
-          "Factor: (u+2)(u-1) = 0",
-          "u = -2 or u = 1",
-          "Since u = 10ˣ > 0, reject u = -2",
-          "u = 1: 10ˣ = 1 = 10⁰ → x = 0"
+        title: "Exercice 4 — COD ou COI ?",
+        type: "table",
+        headers: ["Complément", "Type", "Explication"],
+        rows: [
+          ["à sa mère (Elle parle à sa mère)", "COI", "parler À quelqu'un → préposition à"],
+          ["son cousin (Il voit son cousin)", "COD", "voir quelqu'un → pas de préposition"],
         ],
-        answer: "x = 0"
-      }
-    ]
+      },
+    ],
   },
   {
-    id: "trig",
-    title: "Trigonometry Problems",
+    id: "g7",
+    label: "G7",
+    title: "COI, Pronoms COI & Structures",
+    color: "#0284c7",
+    emoji: "🔗",
+    exercises: [
+      {
+        title: "Exercice 1 — Identifiez le COI",
+        type: "qa",
+        items: [
+          { n: 1, q: "Je téléphone ___ (à qui ?)", a: "à mon ami" },
+          { n: 2, q: "Elle pense ___ (à quoi ?)", a: "à ses vacances" },
+          { n: 3, q: "Il obéit ___ (à qui ?)", a: "à ses parents" },
+          { n: 4, q: "Tu parles ___ (à qui ?)", a: "à la directrice" },
+          { n: 5, q: "Nous avons besoin ___ (de quoi ?)", a: "d'aide" },
+        ],
+      },
+      {
+        title: "Exercice 2 — Remplacez le COI par lui / leur / y / en",
+        type: "transform",
+        instruction: "COI → Pronom",
+        items: [
+          { from: "Je parle à Pierre.", to: "Je lui parle.", note: "lui = à + personne singulier" },
+          { from: "Elle téléphone à ses amies.", to: "Elle leur téléphone.", note: "leur = à + personnes pluriel" },
+          { from: "Il pense à son avenir.", to: "Il y pense.", note: "y = à + chose" },
+          { from: "Tu obéis à tes parents.", to: "Tu leur obéis.", note: "leur = à + personnes pluriel" },
+          { from: "Nous avons besoin de temps.", to: "Nous en avons besoin.", note: "en = de + chose" },
+        ],
+      },
+      {
+        title: "Exercice 3 — Identifiez la structure",
+        type: "table",
+        headers: ["Phrase", "Structure"],
+        rows: [
+          ["Les oiseaux chantent.", "S + V"],
+          ["Marie est belle.", "S + V état + Adj"],
+          ["Il court très vite.", "S + V + Adv + Adv"],
+          ["Je mange une pomme.", "S + V + COD"],
+          ["Elle est très courageuse.", "S + V état + Adv + Adj"],
+          ["Nous partons demain.", "S + V + CC (temps)"],
+          ["Il pleut.", "S + V"],
+          ["Tu sembles vraiment content.", "S + V état + Adv + Adj"],
+          ["Elle travaille assez bien.", "S + V + Adv + Adv"],
+          ["Il parle à son ami.", "S + V + COI"],
+          ["Le soleil brille dehors.", "S + V + CC (lieu)"],
+          ["Elle paraît assez fatiguée.", "S + V état + Adv + Adj"],
+        ],
+      },
+    ],
+  },
+  {
+    id: "g8",
+    label: "G8",
+    title: "Ordre des Mots & Compléments Circonstanciels",
     color: "#7c3aed",
-    emoji: "📐",
-    problems: [
+    emoji: "📝",
+    exercises: [
       {
-        question: "Convert: (a) 150° to radians  (b) 5π/6 to degrees",
-        hint: "Use d/180 = r/π in both directions.",
-        steps: [
-          "(a) Degrees to radians: multiply by π/180",
-          "150 × π/180 = 150π/180 = 5π/6",
-          "",
-          "(b) Radians to degrees: multiply by 180/π",
-          "(5π/6) × (180/π) = 5×180/6 = 900/6 = 150°"
+        title: "Exercice 1 — Remettez dans le bon ordre",
+        type: "transform",
+        instruction: "Mots mélangés → Phrase correcte",
+        items: [
+          { from: "mange / une / Je / pomme", to: "Je mange une pomme." },
+          { from: "est / Marie / belle / très", to: "Marie est très belle." },
+          { from: "à / parle / il / ami / son", to: "Il parle à son ami." },
+          { from: "travaille / lentement / Elle / très", to: "Elle travaille très lentement." },
+          { from: "demain / au / Nous / allons / marché", to: "Nous allons au marché demain." },
+          { from: "grand / Tu / deviens", to: "Tu deviens grand." },
+          { from: "enfants / jouent / Les / dehors", to: "Les enfants jouent dehors." },
+          { from: "content / paraît / assez / Il", to: "Il paraît assez content." },
+          { from: "livre / un / Elle / lit / soir / le", to: "Elle lit un livre le soir." },
+          { from: "à / pense / son / Il / avenir", to: "Il pense à son avenir." },
         ],
-        answer: "(a) 5π/6  (b) 150°"
       },
       {
-        question: "Right triangle: opposite = 5, adjacent = 12. Find all 6 trig ratios for angle θ.",
-        hint: "First find hypotenuse using Pythagorean theorem, then apply SOH-CAH-TOA.",
-        steps: [
-          "Hypotenuse: h = √(5² + 12²) = √(25+144) = √169 = 13",
-          "sin θ = opp/hyp = 5/13",
-          "cos θ = adj/hyp = 12/13",
-          "tan θ = opp/adj = 5/12",
-          "csc θ = hyp/opp = 13/5",
-          "sec θ = hyp/adj = 13/12",
-          "cot θ = adj/opp = 12/5"
+        title: "Exercice 2 — Type de Complément Circonstanciel",
+        type: "table",
+        headers: ["Phrase", "Type de CC"],
+        rows: [
+          ["Je travaille à Kigali.", "CC de lieu"],
+          ["Elle arrive demain matin.", "CC de temps"],
+          ["Il parle doucement.", "CC de manière"],
+          ["Elle pleure de joie.", "CC de cause"],
+          ["Nous étudions pour réussir.", "CC de but"],
+          ["Il écrit avec un stylo rouge.", "CC de moyen"],
+          ["Ils se retrouvent au café.", "CC de lieu"],
+          ["Tu restes ici toute la journée.", "CC de temps / lieu"],
+          ["Elle vient en voiture.", "CC de moyen"],
+          ["Il part parce qu'il est fatigué.", "CC de cause"],
         ],
-        answer: "sin=5/13, cos=12/13, tan=5/12, csc=13/5, sec=13/12, cot=12/5"
       },
       {
-        question: "In triangle ABC: A=40°, B=60°, a=10. Find side b using Law of Sines.",
-        hint: "a/sinA = b/sinB. Cross multiply to find b.",
-        steps: [
-          "Law of Sines: a/sinA = b/sinB",
-          "10/sin(40°) = b/sin(60°)",
-          "b = 10 × sin(60°) / sin(40°)",
-          "sin(60°) = √3/2 ≈ 0.866",
-          "sin(40°) ≈ 0.643",
-          "b = 10 × 0.866 / 0.643",
-          "b ≈ 13.47"
+        title: "Exercice 3 — Formation de questions",
+        type: "table",
+        headers: ["Type", "Exemple"],
+        rows: [
+          ["Intonation", "Tu parles français ?"],
+          ["Est-ce que", "Est-ce que tu parles français ?"],
+          ["Inversion du sujet", "Parles-tu français ?"],
+          ["Adverbe interrogatif", "Où habites-tu ? / Quand arrives-tu ? / Comment vas-tu ?"],
         ],
-        answer: "b ≈ 13.47"
       },
-      {
-        question: "Triangle: a=8, b=5, C=60°. Find side c using Law of Cosines.",
-        hint: "Use c² = a² + b² - 2ab·cosC.",
-        steps: [
-          "c² = a² + b² - 2ab·cos C",
-          "c² = 8² + 5² - 2(8)(5)·cos(60°)",
-          "c² = 64 + 25 - 80 × (1/2)",
-          "c² = 89 - 40 = 49",
-          "c = √49 = 7"
-        ],
-        answer: "c = 7"
-      },
-      {
-        question: "Prove: sin²θ + cos²θ = 1 (from right triangle definition)",
-        hint: "Write sin and cos in terms of sides, then add squares.",
-        steps: [
-          "Let θ be an angle in right triangle with sides opp, adj, hyp",
-          "sin θ = opp/hyp,  cos θ = adj/hyp",
-          "sin²θ + cos²θ = (opp/hyp)² + (adj/hyp)²",
-          "= (opp² + adj²) / hyp²",
-          "By Pythagorean theorem: opp² + adj² = hyp²",
-          "= hyp²/hyp² = 1 ✓"
-        ],
-        answer: "sin²θ + cos²θ = 1  (QED)"
-      }
-    ]
-  }
+    ],
+  },
+];
+
+const aminaText = [
+  { n: 1, blank: "___(1)___", answer: "depuis", sentence: "Je suis étudiante depuis trois ans." },
+  { n: 2, blank: "___(2)___", answer: "à Paris", sentence: "J'habite à Paris, mais je suis originaire du Sénégal." },
+  { n: 3, blank: "___(3)___", answer: "qui", sentence: "J'ai une amie qui s'appelle Sophie." },
+  { n: 4, blank: "___(4)___", answer: "Elle", sentence: "Elle est professeure de français." },
+  { n: 5, blank: "___(5)___", answer: "lui", sentence: "Je lui parle souvent (= à Sophie)." },
+  { n: 6, blank: "___(6)___", answer: "parce que", sentence: "Je lui parle souvent parce que j'aime beaucoup le français." },
+  { n: 7, blank: "___(7)___", answer: "Est-ce que", sentence: "Est-ce que tu aimes le français ?" },
+  { n: 8, blank: "___(8)___", answer: "les", sentence: "Moi, j'adore les [domaines que sont] la littérature, la grammaire..." },
+  { n: 9, blank: "___(9)___", answer: "très", sentence: "Mon amie est très sympathique." },
+  { n: 10, blank: "___(10)___", answer: "beaucoup", sentence: "Elle connaît beaucoup de personnes importantes." },
+  { n: 11, blank: "___(11)___", answer: "Comment", sentence: "Comment vas-tu ?" },
+  { n: 12, blank: "___(12)___", answer: "Quand", sentence: "Quand je rencontre Sophie, je lui parle toujours en français." },
+  { n: 13, blank: "___(13)___", answer: "Demain", sentence: "Demain, nous allons visiter le musée du Louvre." },
 ];
 
 export default function App() {
-  const [activeSec, setActiveSec] = useState(null);
-  const [openProblem, setOpenProblem] = useState(null);
-  const [showSteps, setShowSteps] = useState({});
-  const [attempted, setAttempted] = useState({});
+  const [activeGroup, setActiveGroup] = useState(null);
+  const [openEx, setOpenEx] = useState(null);
+  const [aminaRevealed, setAminaRevealed] = useState({});
+  const [showAllAmina, setShowAllAmina] = useState(false);
 
-  function toggleStep(key) {
-    setShowSteps(p => ({ ...p, [key]: !p[key] }));
-  }
-
-  function markAttempted(key) {
-    setAttempted(p => ({ ...p, [key]: true }));
-  }
-
-  const totalProblems = sections.reduce((s, sec) => s + sec.problems.length, 0);
-  const doneCount = Object.keys(attempted).length;
+  const g = groups.find(x => x.id === activeGroup);
 
   return (
-    <div style={{ fontFamily: "'Georgia', serif", maxWidth: 840, margin: "0 auto", padding: "16px", background: "#0a0a14", minHeight: "100vh", color: "#e2e8f0", boxSizing: "border-box" }}>
-      <style>{`body, html { background: #0a0a14 !important; margin: 0; padding: 0; } * { box-sizing: border-box; }`}</style>
+    <div style={{ fontFamily: "system-ui, sans-serif", maxWidth: 860, margin: "0 auto", padding: 16, background: "#0a0a14", minHeight: "100vh", color: "#e2e8f0" }}>
+      <style>{`body,html{background:#0a0a14!important;margin:0;padding:0}*{box-sizing:border-box}`}</style>
 
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #0d0d1f, #1a0a3a)", border: "1px solid #3730a366", borderRadius: 14, padding: "18px 22px", marginBottom: 18 }}>
-        <div style={{ fontSize: 10, color: "#7c3aed", letterSpacing: 3, textTransform: "uppercase", marginBottom: 4 }}>GENFM601 · Worked Examples & Practice</div>
-        <h1 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 700, color: "#f0e6ff" }}>Maths Practice Problems</h1>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
-          <div style={{ fontSize: 12, color: "#64748b" }}>{sections.length} topics · {totalProblems} worked examples</div>
-          <div style={{ fontSize: 12 }}>
-            <span style={{ color: "#22c55e" }}>✓ {doneCount}</span>
-            <span style={{ color: "#475569" }}> / {totalProblems} attempted</span>
-          </div>
-        </div>
-        {doneCount > 0 && (
-          <div style={{ height: 3, background: "#1e1e35", borderRadius: 4, marginTop: 8 }}>
-            <div style={{ height: 3, background: "#22c55e", borderRadius: 4, width: `${(doneCount/totalProblems)*100}%`, transition: "width 0.4s" }} />
-          </div>
-        )}
+      <div style={{ background: "linear-gradient(135deg, #1a0a2e, #0a1a2e)", border: "1px solid #3730a344", borderRadius: 14, padding: "18px 22px", marginBottom: 18 }}>
+        <div style={{ fontSize: 10, color: "#a78bfa", letterSpacing: 3, textTransform: "uppercase", marginBottom: 4 }}>SJITC · Corrigé Complet G1–G8</div>
+        <h1 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 800, color: "#f0e6ff" }}>🇫🇷 Français — Grammaire & Vocabulaire</h1>
+        <div style={{ fontSize: 12, color: "#64748b" }}>Groupes G1 à G8 · Travail en Groupe</div>
       </div>
 
-      {/* Section selector */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 18 }}>
-        {sections.map(sec => (
-          <button key={sec.id} onClick={() => setActiveSec(activeSec === sec.id ? null : sec.id)} style={{
-            padding: "10px 8px", borderRadius: 10, border: `1px solid ${sec.color}${activeSec === sec.id ? "cc" : "44"}`,
-            background: activeSec === sec.id ? `${sec.color}22` : "#13132a",
-            color: activeSec === sec.id ? "#f0e6ff" : "#94a3b8",
-            cursor: "pointer", fontFamily: "inherit", fontWeight: 600, fontSize: 11,
-            textAlign: "center", transition: "all 0.15s", lineHeight: 1.3
+      {/* Group grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 18 }}>
+        {groups.map(grp => (
+          <button key={grp.id} onClick={() => { setActiveGroup(activeGroup === grp.id ? null : grp.id); setOpenEx(null); }} style={{
+            padding: "10px 6px", borderRadius: 10,
+            border: `1px solid ${grp.color}${activeGroup === grp.id ? "cc" : "44"}`,
+            background: activeGroup === grp.id ? `${grp.color}33` : "#13132a",
+            color: activeGroup === grp.id ? "#f0e6ff" : "#94a3b8",
+            cursor: "pointer", fontFamily: "inherit", fontWeight: 700, fontSize: 12,
+            textAlign: "center", transition: "all 0.15s", lineHeight: 1.4,
           }}>
-            <div style={{ fontSize: 18, marginBottom: 4 }}>{sec.emoji}</div>
-            {sec.title}
+            <div style={{ fontSize: 20, marginBottom: 3 }}>{grp.emoji}</div>
+            <div style={{ color: grp.color, fontSize: 13 }}>{grp.label}</div>
+            <div style={{ fontSize: 10, marginTop: 2, opacity: 0.8 }}>{grp.title.split(" ")[0]}</div>
           </button>
         ))}
       </div>
 
-      {/* No section selected */}
-      {!activeSec && (
-        <div style={{ background: "#13132a", border: "1px solid #1e1e35", borderRadius: 12, padding: "24px", textAlign: "center" }}>
-          <div style={{ fontSize: 32, marginBottom: 12 }}>👆</div>
-          <div style={{ color: "#64748b", fontSize: 14 }}>Select a topic above to start practicing</div>
-          <div style={{ color: "#475569", fontSize: 12, marginTop: 6 }}>Each problem has a hint and full step-by-step solution</div>
+      {/* Placeholder */}
+      {!activeGroup && (
+        <div style={{ background: "#13132a", border: "1px solid #1e1e35", borderRadius: 12, padding: 28, textAlign: "center" }}>
+          <div style={{ fontSize: 36, marginBottom: 10 }}>👆</div>
+          <div style={{ color: "#64748b", fontSize: 14 }}>Sélectionne un groupe pour voir les réponses</div>
         </div>
       )}
 
-      {/* Problems */}
-      {activeSec && (() => {
-        const sec = sections.find(s => s.id === activeSec);
-        return (
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-              <div style={{ width: 4, height: 24, background: sec.color, borderRadius: 2 }} />
-              <h2 style={{ margin: 0, fontSize: 16, color: "#f0e6ff" }}>{sec.emoji} {sec.title}</h2>
-              <span style={{ fontSize: 11, color: "#64748b", marginLeft: "auto" }}>{sec.problems.length} problems</span>
+      {/* Group content */}
+      {g && (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+            <div style={{ width: 4, height: 28, background: g.color, borderRadius: 3 }} />
+            <div>
+              <div style={{ fontSize: 11, color: g.color, textTransform: "uppercase", letterSpacing: 2 }}>{g.label}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#f0e6ff" }}>{g.title}</div>
             </div>
-
-            {sec.problems.map((prob, pi) => {
-              const key = `${sec.id}-${pi}`;
-              const isOpen = openProblem === key;
-              const stepsVisible = showSteps[key];
-              const done = attempted[key];
-
-              return (
-                <div key={pi} style={{
-                  background: "#13132a",
-                  border: `1px solid ${isOpen ? sec.color + "66" : "#1e1e35"}`,
-                  borderLeft: `3px solid ${done ? "#22c55e" : sec.color}`,
-                  borderRadius: 12, marginBottom: 12, overflow: "hidden",
-                  transition: "all 0.2s"
-                }}>
-                  {/* Problem header */}
-                  <button onClick={() => setOpenProblem(isOpen ? null : key)} style={{
-                    width: "100%", textAlign: "left", padding: "14px 16px",
-                    background: "transparent", border: "none", cursor: "pointer",
-                    fontFamily: "inherit", display: "flex", gap: 12, alignItems: "flex-start"
-                  }}>
-                    <span style={{
-                      background: done ? "#14532d" : sec.color + "33",
-                      color: done ? "#86efac" : sec.color,
-                      borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700,
-                      flexShrink: 0, marginTop: 1
-                    }}>Q{pi+1}</span>
-                    <span style={{ fontSize: 14, color: "#e2e8f0", lineHeight: 1.5, fontFamily: "monospace" }}>{prob.question}</span>
-                    <span style={{ color: "#475569", marginLeft: "auto", flexShrink: 0, fontSize: 16 }}>{isOpen ? "▲" : "▼"}</span>
-                  </button>
-
-                  {/* Expanded */}
-                  {isOpen && (
-                    <div style={{ padding: "0 16px 16px", borderTop: `1px solid ${sec.color}22` }}>
-                      {/* Hint */}
-                      <div style={{ background: "#1e1a0a", border: "1px solid #fbbf2444", borderRadius: 8, padding: "10px 12px", margin: "12px 0" }}>
-                        <span style={{ color: "#fbbf24", fontWeight: 700, fontSize: 11 }}>💡 HINT: </span>
-                        <span style={{ color: "#fde68a", fontSize: 13 }}>{prob.hint}</span>
-                      </div>
-
-                      {/* Try it yourself prompt */}
-                      {!stepsVisible && (
-                        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                          <button onClick={() => { toggleStep(key); markAttempted(key); }} style={{
-                            flex: 1, padding: "10px", background: `${sec.color}22`,
-                            border: `1px solid ${sec.color}66`, borderRadius: 8,
-                            color: sec.color, fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit"
-                          }}>
-                            Show Step-by-Step Solution →
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Steps */}
-                      {stepsVisible && (
-                        <div>
-                          <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Solution</div>
-                          <div style={{ background: "#0d0d1f", borderRadius: 8, padding: "12px 14px" }}>
-                            {prob.steps.map((step, si) => step === "" ? (
-                              <div key={si} style={{ height: 8 }} />
-                            ) : (
-                              <div key={si} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
-                                <span style={{ color: sec.color, fontSize: 12, flexShrink: 0, marginTop: 2 }}>▸</span>
-                                <span style={{ fontSize: 13, color: "#cbd5e1", fontFamily: "monospace", lineHeight: 1.6 }}>{step}</span>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Answer box */}
-                          <div style={{ background: "#0a2d14", border: "1px solid #22c55e55", borderRadius: 8, padding: "10px 14px", marginTop: 10, display: "flex", alignItems: "center", gap: 10 }}>
-                            <span style={{ color: "#22c55e", fontSize: 18 }}>✓</span>
-                            <div>
-                              <div style={{ fontSize: 10, color: "#16a34a", textTransform: "uppercase", letterSpacing: 1 }}>Final Answer</div>
-                              <div style={{ fontSize: 14, fontWeight: 700, color: "#86efac", fontFamily: "monospace" }}>{prob.answer}</div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
           </div>
-        );
-      })()}
 
-      <div style={{ textAlign: "center", fontSize: 11, color: "#1e1e35", marginTop: 20 }}>
-        GENFM601 Practice · SJITC Nyamirambo 2025-2026
-      </div>
+          {g.exercises.map((ex, ei) => {
+            const key = `${g.id}-${ei}`;
+            const open = openEx === key;
+            return (
+              <div key={ei} style={{ background: "#13132a", border: `1px solid ${open ? g.color + "55" : "#1e1e35"}`, borderRadius: 12, marginBottom: 10, overflow: "hidden" }}>
+                <button onClick={() => setOpenEx(open ? null : key)} style={{
+                  width: "100%", textAlign: "left", padding: "13px 16px",
+                  background: "transparent", border: "none", cursor: "pointer", fontFamily: "inherit",
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: open ? g.color : "#cbd5e1" }}>{ex.title}</span>
+                  <span style={{ color: g.color, fontSize: 18 }}>{open ? "▲" : "▼"}</span>
+                </button>
+
+                {open && (
+                  <div style={{ padding: "0 16px 16px", borderTop: `1px solid ${g.color}22` }}>
+
+                    {/* TABLE */}
+                    {ex.type === "table" && (
+                      <div style={{ overflowX: "auto", marginTop: 12 }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                          <thead>
+                            <tr>
+                              {ex.headers.map((h, hi) => (
+                                <th key={hi} style={{ padding: "8px 12px", background: `${g.color}22`, color: g.color, textAlign: "left", border: `1px solid ${g.color}33`, fontSize: 11, textTransform: "uppercase", letterSpacing: 1 }}>{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {ex.rows.map((row, ri) => (
+                              <tr key={ri} style={{ background: ri % 2 === 0 ? "#0d0d1f" : "#13132a" }}>
+                                {row.map((cell, ci) => (
+                                  <td key={ci} style={{ padding: "8px 12px", border: `1px solid #1e1e35`, color: ci === 0 ? "#f0e6ff" : ci === 1 ? g.color : "#94a3b8", fontWeight: ci === 1 ? 700 : 400 }}>{cell}</td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {/* QA */}
+                    {ex.type === "qa" && (
+                      <div style={{ marginTop: 12 }}>
+                        {ex.items.map((item, ii) => (
+                          <div key={ii} style={{ display: "flex", gap: 10, padding: "8px 10px", background: ii % 2 === 0 ? "#0d0d1f" : "#111120", borderRadius: 6, marginBottom: 4, alignItems: "flex-start", flexWrap: "wrap" }}>
+                            <span style={{ color: g.color, fontWeight: 700, fontSize: 12, minWidth: 24, flexShrink: 0 }}>{item.n}.</span>
+                            <span style={{ color: "#94a3b8", fontSize: 13, flex: 1, minWidth: 120 }}>{item.q}</span>
+                            <span style={{ color: "#f0e6ff", fontWeight: 700, fontSize: 13, background: `${g.color}22`, borderRadius: 6, padding: "2px 8px", flexShrink: 0 }}>{item.a}</span>
+                            {item.note && <span style={{ color: "#475569", fontSize: 11, fontStyle: "italic", width: "100%", paddingLeft: 34 }}>{item.note}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* TRANSFORM */}
+                    {ex.type === "transform" && (
+                      <div style={{ marginTop: 12 }}>
+                        {ex.instruction && <div style={{ fontSize: 12, color: "#64748b", fontStyle: "italic", marginBottom: 10 }}>→ {ex.instruction}</div>}
+                        {ex.items.map((item, ii) => (
+                          <div key={ii} style={{ background: ii % 2 === 0 ? "#0d0d1f" : "#111120", borderRadius: 8, padding: "10px 12px", marginBottom: 6 }}>
+                            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                              <span style={{ fontSize: 13, color: "#94a3b8", flex: 1 }}>{item.from}</span>
+                              <span style={{ color: g.color, fontSize: 16, flexShrink: 0 }}>→</span>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: "#86efac", flex: 1 }}>{item.to}</span>
+                            </div>
+                            {item.note && <div style={{ fontSize: 11, color: "#475569", fontStyle: "italic", marginTop: 4 }}>💡 {item.note}</div>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Texte Amina — shown for all groups */}
+          <div style={{ background: "#13132a", border: `1px solid ${g.color}44`, borderRadius: 12, marginTop: 6, overflow: "hidden" }}>
+            <button onClick={() => setOpenEx(openEx === `${g.id}-amina` ? null : `${g.id}-amina`)} style={{
+              width: "100%", textAlign: "left", padding: "13px 16px", background: "transparent", border: "none",
+              cursor: "pointer", fontFamily: "inherit", display: "flex", justifyContent: "space-between", alignItems: "center",
+            }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: openEx === `${g.id}-amina` ? g.color : "#cbd5e1" }}>📖 Exercice — Texte à compléter (Amina)</span>
+              <span style={{ color: g.color, fontSize: 18 }}>{openEx === `${g.id}-amina` ? "▲" : "▼"}</span>
+            </button>
+
+            {openEx === `${g.id}-amina` && (
+              <div style={{ padding: "0 16px 16px", borderTop: `1px solid ${g.color}22` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "12px 0 10px" }}>
+                  <div style={{ fontSize: 12, color: "#64748b" }}>Mots : elle • lui • qui • est-ce que • comment • à Paris • depuis • parce que • très • beaucoup • les • demain • quand</div>
+                  <button onClick={() => setShowAllAmina(!showAllAmina)} style={{
+                    background: `${g.color}22`, border: `1px solid ${g.color}66`, borderRadius: 8,
+                    color: g.color, fontSize: 11, padding: "4px 10px", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, whiteSpace: "nowrap", marginLeft: 8, flexShrink: 0,
+                  }}>{showAllAmina ? "Cacher tout" : "Tout révéler"}</button>
+                </div>
+                {aminaText.map((item) => {
+                  const revealed = showAllAmina || aminaRevealed[item.n];
+                  return (
+                    <div key={item.n} style={{ display: "flex", gap: 10, padding: "7px 10px", background: item.n % 2 === 0 ? "#0d0d1f" : "#111120", borderRadius: 6, marginBottom: 4, alignItems: "flex-start" }}
+                      onClick={() => setAminaRevealed(p => ({ ...p, [item.n]: !p[item.n] }))}>
+                      <span style={{ color: g.color, fontWeight: 700, fontSize: 12, minWidth: 24, flexShrink: 0 }}>({item.n})</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                          <span style={{
+                            fontWeight: 700, fontSize: 13, padding: "1px 8px", borderRadius: 6,
+                            background: revealed ? `${g.color}22` : "#1e1e35",
+                            color: revealed ? "#f0e6ff" : "#475569",
+                            cursor: "pointer", minWidth: 70, textAlign: "center", border: `1px solid ${revealed ? g.color + "44" : "#2d2d4e"}`,
+                            transition: "all 0.2s"
+                          }}>{revealed ? item.answer : "Tap pour voir"}</span>
+                          {revealed && <span style={{ fontSize: 12, color: "#94a3b8", fontStyle: "italic" }}>→ {item.sentence}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div style={{ textAlign: "center", fontSize: 11, color: "#1e1e35", marginTop: 20 }}>Corrigé Complet G1–G8 · Français Grammaire & Vocabulaire</div>
     </div>
   );
 }
